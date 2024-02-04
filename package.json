@@ -13,13 +13,16 @@
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.0",
     "@mui/material-nextjs": "^5.15.0",
     "@mui/styles": "^5.15.0",
+    "axios": "^1.6.7",
     "next": "13.5.6",
     "react": "^18",
     "react-bootstrap": "^2.9.1",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-toastify": "^10.0.4"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",

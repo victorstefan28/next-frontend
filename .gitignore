@@ -33,3 +33,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.vs/ProjectSettings.json
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
+.vs/next-frontend/FileContentIndex/e7616bbb-ca3e-48dd-b035-60b74e0d1656.vsidx
+.vs/next-frontend/v17/.wsuo

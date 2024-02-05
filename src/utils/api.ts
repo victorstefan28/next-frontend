@@ -48,7 +48,8 @@ const apiCall = async (
   if (
     (!accessToken || isJwtExpired(accessToken)) &&
     endpoint !== "/auth/refresh" &&
-    endpoint !== "/auth/login"
+    endpoint !== "/auth/login" &&
+    endpoint !== "/auth/register"
   ) {
     try {
       accessToken = await refreshTokenFunc();

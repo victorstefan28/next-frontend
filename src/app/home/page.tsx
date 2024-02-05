@@ -1,6 +1,6 @@
 // pages/index.tsx
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Grid,
@@ -15,6 +15,10 @@ import {
 import Navbar from "@/components/navbar/navbar";
 import { makeStyles } from "@mui/styles";
 import theme from "@/theme/theme";
+import apiCall from "@/utils/api";
+import { HttpMethod } from "@/utils/httpMethods";
+import { IAthlete } from "@/types/athlete";
+import { ICompetition } from "@/types/competition";
 
 const useStyles = makeStyles({
   greetingBox: {
@@ -26,7 +30,7 @@ const useStyles = makeStyles({
     maxWidth: 345,
   },
   media: {
-    height: 140,
+    height: 200,
   },
   sectionMargin: {
     marginBottom: theme.spacing(4),
@@ -37,22 +41,40 @@ const Home = () => {
   const classes = useStyles();
 
   // Sample data for news and competitions
-  const newsItems = [{}, {}, {}]; // replace with actual news items
+  const [newsItems, setNewsItems] = useState<IAthlete[]>([]);
+  const [upcomingComp, setUpcomingComp] = useState<ICompetition[]>([]);
+  useEffect(() => {
+    const fetchTop3 = async () => {
+      const res = await apiCall(
+        "/Rank/athletes?PageNumber=0&PageSize=3",
+        HttpMethod.GET
+      );
+      console.log(res);
+      setNewsItems(res as IAthlete[]);
+    };
+    const fetchUpcomingCompetitions = async () => {
+      const res = await apiCall("/Competition", HttpMethod.GET);
+      const upcomingCompetitions = (res as ICompetition[]).filter(
+        (item, index) => true
+      );
+      setUpcomingComp(upcomingCompetitions as ICompetition[]);
+    };
+    fetchTop3();
+    fetchUpcomingCompetitions();
+  }, []); // replace with actual news items
   const competitionItems = [{}, {}, {}]; // replace with actual competition items
 
   return (
     <Box>
-      <Navbar />
       <Container>
         <Paper className={classes.greetingBox}>
-          <Typography variant="h2">Welcome Back, [Username]!</Typography>
-          <Typography variant="body1">Here's what's new today:</Typography>
+          <Typography variant="h2">Welcome Back!</Typography>
         </Paper>
 
         {/* News Section */}
         <section className={classes.sectionMargin}>
           <Typography variant="h4" gutterBottom>
-            Latest News
+            Top athletes
           </Typography>
           <Grid container spacing={3}>
             {newsItems.map((item, index) => (
@@ -60,56 +82,75 @@ const Home = () => {
                 <Card className={classes.card}>
                   <CardMedia
                     className={classes.media}
-                    image="/static/news-placeholder.jpg" // Replace with actual image path
-                    title="News Title"
+                    image="/athlete-placeholder.png"
+                    title="Athlete"
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                      News Headline
+                      {item.name}
                     </Typography>
                     <Typography
                       variant="body2"
                       color="textSecondary"
                       component="p"
                     >
-                      News Summary
+                      {item.points} Puncte
                     </Typography>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
+            {!newsItems.length && (
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="h2"
+                style={{ padding: "40px", marginTop: "10px" }}
+              >
+                No athletes registered
+              </Typography>
+            )}
           </Grid>
         </section>
 
-        {/* Competitions Section */}
         <section className={classes.sectionMargin}>
           <Typography variant="h4" gutterBottom>
             Upcoming Competitions
           </Typography>
           <Grid container spacing={3}>
-            {competitionItems.map((item, index) => (
+            {upcomingComp.map((item, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <Card className={classes.card}>
                   <CardMedia
                     className={classes.media}
-                    image="/static/competition-placeholder.jpg" // Replace with actual image path
+                    image="competition.png"
                     title="Competition Title"
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                      Competition Name
+                      {item.name}
                     </Typography>
                     <Typography
                       variant="body2"
                       color="textSecondary"
                       component="p"
                     >
-                      Competition Details
+                      {item.dayLeft} days left
                     </Typography>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
+            {!upcomingComp.length && (
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="h2"
+                style={{ padding: "40px", marginTop: "10px" }}
+              >
+                No competitions registered
+              </Typography>
+            )}
           </Grid>
         </section>
       </Container>

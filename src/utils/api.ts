@@ -1,6 +1,8 @@
 import axios from "axios";
 import axiosInstance from "./axiosInstance";
 import { HttpMethod } from "./httpMethods";
+import { isJwtExpired } from "./isJwtExpired";
+import { useRouter } from "next/navigation";
 
 // utils/api.ts
 const BASE_URL_HTTPS = "https://localhost:7225/";
@@ -12,17 +14,16 @@ const getTokens = () => {
   return { accessToken, refreshToken };
 };
 
-const setTokens = (accessToken: string, refreshToken: string) => {
+const setTokens = (accessToken: string, refreshToken?: string) => {
   localStorage.setItem("accessToken", accessToken);
-  localStorage.setItem("refreshToken", refreshToken);
+  if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
 };
 
-const refreshTokenFunc = async () => {
+export const refreshTokenFunc = async () => {
   const { refreshToken } = getTokens();
-  // Call your refresh token API endpoint using the refresh token
-  // Assume this returns new access and refresh tokens
+
   const newTokens: any = await axios.post(
-    BASE_URL_HTTP + "Auth/refresh?refreshToken=" + refreshToken,
+    BASE_URL_HTTP + "auth/refresh?refreshToken=" + refreshToken,
     {},
     {
       headers: {
@@ -31,14 +32,8 @@ const refreshTokenFunc = async () => {
     }
   );
 
-  setTokens(newTokens.accessToken, newTokens.refreshToken);
-  return newTokens.accessToken;
-};
-
-const isTokenExpired = (token: string | null) => {
-  // Implement logic to check if the token is expired
-  // Usually, you decode the JWT and check the 'exp' field
-  return false;
+  setTokens(newTokens.data.accessToken);
+  return newTokens.data.accessToken;
 };
 
 const apiCall = async (
@@ -48,8 +43,17 @@ const apiCall = async (
 ) => {
   let { accessToken } = getTokens();
 
-  if (isTokenExpired(accessToken)) {
-    accessToken = await refreshTokenFunc();
+  if (
+    (!accessToken || isJwtExpired(accessToken)) &&
+    endpoint !== "/auth/refresh" &&
+    endpoint !== "/auth/login"
+  ) {
+    try {
+      accessToken = await refreshTokenFunc();
+    } catch (error) {
+      const router = useRouter();
+      router.push("/login");
+    }
   }
 
   try {

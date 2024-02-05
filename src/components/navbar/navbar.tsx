@@ -32,7 +32,7 @@ const Navbar = () => {
         <Typography variant="h6" className={classes.title}>
           Karate Platform
         </Typography>
-        <Link href="/dashboard" passHref>
+        <Link href="/home" passHref>
           <Button color="inherit" className={classes.link}>
             Dashboard
           </Button>

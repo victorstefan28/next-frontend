@@ -28,7 +28,8 @@ const Home: React.FC = () => {
           backgroundSize: "cover",
           backgroundPosition: "center", // Adjust as needed
           backgroundRepeat: "no-repeat",
-          height: "300px", // Adjust the height as needed
+          height: "30vh", // Adjust the height as needed
+          width: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -46,6 +47,16 @@ const Home: React.FC = () => {
           href="/register"
         >
           Join Now
+        </Button>
+        <Button
+          sx={{ mt: 2 }}
+          variant="contained"
+          color="primary"
+          size="small"
+          component={Link}
+          href="/login"
+        >
+          Sign in
         </Button>
       </Box>
 

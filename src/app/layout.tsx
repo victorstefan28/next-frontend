@@ -10,6 +10,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { useEffect, useState } from "react";
+import { CssBaseline } from "@mui/material";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const meta: Metadata = {
@@ -34,6 +36,7 @@ export default function RootLayout({
         {isClient && <ToastContainer />}
         <AuthProvider>
           <ThemeProvider theme={theme}>
+            <CssBaseline />
             <body className={inter.className}>{children}</body>
           </ThemeProvider>
         </AuthProvider>

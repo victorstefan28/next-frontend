@@ -5,6 +5,8 @@ import Link from "next/link";
 import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import theme from "@/theme/theme";
+import { useAuth } from "@/contexts/AuthContext";
+import { DoorBack, DoorBackOutlined } from "@mui/icons-material";
 
 const useStyles = makeStyles({
   appBar: {
@@ -25,6 +27,7 @@ const useStyles = makeStyles({
 
 const Navbar = () => {
   const classes = useStyles();
+  const { clearTokens } = useAuth();
 
   return (
     <AppBar position="static" className={classes.appBar}>
@@ -32,6 +35,14 @@ const Navbar = () => {
         <Typography variant="h6" className={classes.title}>
           Karate Platform
         </Typography>
+        <Button
+          onClick={() => clearTokens()}
+          color="inherit"
+          className={classes.link}
+        >
+          <DoorBackOutlined />
+          Sign-out
+        </Button>
         <Link href="/home" passHref>
           <Button color="inherit" className={classes.link}>
             Dashboard

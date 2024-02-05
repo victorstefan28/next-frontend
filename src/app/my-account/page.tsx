@@ -32,7 +32,7 @@ const MyAccountPage = () => {
         apiCall("/coach/me", HttpMethod.GET).then((response) => {
           setUserInfo(response);
         });
-      } else {
+      } else if (role == "Athlete") {
         apiCall("/athlete/me", HttpMethod.GET).then((response) => {
           setUserInfo(response);
         });
@@ -70,6 +70,15 @@ const MyAccountPage = () => {
       errorMessages.forEach((message) => toast.error(message));
     }
   };
+  const handleAddRequest = async (username: string) => {
+    try {
+      await apiCall("/Request/join/coach/" + username, HttpMethod.POST);
+      fetchData();
+    } catch (error) {
+      const errorMessages = extractErrorMessage(error);
+      errorMessages.forEach((message) => toast.error(message));
+    }
+  };
 
   return (
     <div>
@@ -84,7 +93,7 @@ const MyAccountPage = () => {
         />
       )}
       {userRole === "Athlete" && userInfo && (
-        <AthleteInfo athlete={userInfo as IAthlete} />
+        <AthleteInfo onAdd={handleAddRequest} athlete={userInfo as IAthlete} />
       )}
     </div>
   );

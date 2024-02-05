@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,8 +10,17 @@ import {
   Button,
 } from "@mui/material";
 import { IAthlete } from "@/types/athlete";
+import ApplyForCoach from "../modals/submitRequestToCoach";
 
-const AthleteInfo = ({ athlete }: { athlete: IAthlete }) => {
+const AthleteInfo = ({
+  athlete,
+  onAdd,
+}: {
+  athlete: IAthlete;
+  onAdd: (username: string) => void;
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="athlete info table">
@@ -31,7 +40,14 @@ const AthleteInfo = ({ athlete }: { athlete: IAthlete }) => {
             <TableCell align="right">
               {athlete.coachName ?? (
                 <>
-                  <Button>Apply for a coach</Button>
+                  <ApplyForCoach
+                    onAdd={onAdd}
+                    open={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                  />
+                  <Button onClick={() => setIsModalOpen(true)}>
+                    Apply for a coach
+                  </Button>
                 </>
               )}
             </TableCell>

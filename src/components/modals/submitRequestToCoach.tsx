@@ -12,10 +12,10 @@ import {
 interface AddCompetitionModalProps {
   open: boolean;
   onClose: () => void;
-  onAdd: (competition: { name: string }) => void;
+  onAdd: (username: string) => void;
 }
 
-const AddClubModal: React.FC<AddCompetitionModalProps> = ({
+const ApplyForCoach: React.FC<AddCompetitionModalProps> = ({
   open,
   onClose,
   onAdd,
@@ -23,18 +23,18 @@ const AddClubModal: React.FC<AddCompetitionModalProps> = ({
   const [name, setName] = useState("");
 
   const handleSubmit = () => {
-    onAdd({ name });
+    onAdd(name);
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add New Club</DialogTitle>
+      <DialogTitle>Apply for a coach</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
           margin="dense"
-          label="Club Name"
+          label="Coach username"
           type="text"
           fullWidth
           variant="outlined"
@@ -50,4 +50,4 @@ const AddClubModal: React.FC<AddCompetitionModalProps> = ({
   );
 };
 
-export default AddClubModal;
+export default ApplyForCoach;

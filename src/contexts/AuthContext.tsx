@@ -15,6 +15,7 @@ interface AuthContextType {
   accessToken: string | null;
   refreshToken: string | null;
   setTokens: (accessToken: string, refreshToken: string) => void;
+  clearTokens: () => void;
   isAdmin: boolean;
 }
 
@@ -25,6 +26,7 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter();
   const [accessToken, setAccessToken] = useState<string | null>(
     localStorage.getItem("accessToken")
@@ -65,7 +67,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <AuthContext.Provider
-      value={{ accessToken, refreshToken, setTokens, isAdmin }}
+      value={{ accessToken, refreshToken, clearTokens, setTokens, isAdmin }}
     >
       {children}
     </AuthContext.Provider>

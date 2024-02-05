@@ -3,6 +3,8 @@ import axiosInstance from "./axiosInstance";
 import { HttpMethod } from "./httpMethods";
 import { isJwtExpired } from "./isJwtExpired";
 import { useRouter } from "next/navigation";
+import extractErrorMessage from "./errorHandler";
+import { toast } from "react-toastify";
 
 // utils/api.ts
 const BASE_URL_HTTPS = "https://localhost:7225/";
@@ -51,6 +53,7 @@ const apiCall = async (
     try {
       accessToken = await refreshTokenFunc();
     } catch (error) {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
       router.push("/login");
     }
@@ -68,8 +71,8 @@ const apiCall = async (
 
     return response.data;
   } catch (error) {
-    // Handle errors (e.g., network error, request rejected by server)
-    throw error;
+    const errorMessages = extractErrorMessage(error);
+    errorMessages.forEach((message) => toast.error(message));
   }
 };
 

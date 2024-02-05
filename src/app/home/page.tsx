@@ -19,6 +19,8 @@ import apiCall from "@/utils/api";
 import { HttpMethod } from "@/utils/httpMethods";
 import { IAthlete } from "@/types/athlete";
 import { ICompetition } from "@/types/competition";
+import extractErrorMessage from "@/utils/errorHandler";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles({
   greetingBox: {
@@ -45,19 +47,28 @@ const Home = () => {
   const [upcomingComp, setUpcomingComp] = useState<ICompetition[]>([]);
   useEffect(() => {
     const fetchTop3 = async () => {
-      const res = await apiCall(
-        "/Rank/athletes?PageNumber=0&PageSize=3",
-        HttpMethod.GET
-      );
-      console.log(res);
-      setNewsItems(res as IAthlete[]);
+      try {
+        const res = await apiCall(
+          "/Rank/athletes?PageNumber=0&PageSize=3",
+          HttpMethod.GET
+        );
+        setNewsItems(res as IAthlete[]);
+      } catch (error) {
+        const errorMessages = extractErrorMessage(error);
+        errorMessages.forEach((message) => toast.error(message));
+      }
     };
     const fetchUpcomingCompetitions = async () => {
-      const res = await apiCall("/Competition", HttpMethod.GET);
-      const upcomingCompetitions = (res as ICompetition[]).filter(
-        (item, index) => true
-      );
-      setUpcomingComp(upcomingCompetitions as ICompetition[]);
+      try {
+        const res = await apiCall("/Competition", HttpMethod.GET);
+        const upcomingCompetitions = (res as ICompetition[]).filter(
+          (item, index) => true
+        );
+        setUpcomingComp(upcomingCompetitions as ICompetition[]);
+      } catch (error) {
+        const errorMessages = extractErrorMessage(error);
+        errorMessages.forEach((message) => toast.error(message));
+      }
     };
     fetchTop3();
     fetchUpcomingCompetitions();

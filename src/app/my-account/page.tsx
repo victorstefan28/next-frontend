@@ -28,14 +28,19 @@ const MyAccountPage = () => {
       console.log(decodedToken);
       setUserRole(decodedToken.role);
       const role = decodedToken.role;
-      if (role == "Coach") {
-        apiCall("/coach/me", HttpMethod.GET).then((response) => {
-          setUserInfo(response);
-        });
-      } else if (role == "Athlete") {
-        apiCall("/athlete/me", HttpMethod.GET).then((response) => {
-          setUserInfo(response);
-        });
+      try {
+        if (role == "Coach") {
+          apiCall("/coach/me", HttpMethod.GET).then((response) => {
+            setUserInfo(response);
+          });
+        } else if (role == "Athlete") {
+          apiCall("/athlete/me", HttpMethod.GET).then((response) => {
+            setUserInfo(response);
+          });
+        }
+      } catch (error) {
+        const errorMessages = extractErrorMessage(error);
+        errorMessages.forEach((message) => toast.error(message));
       }
     }
   };

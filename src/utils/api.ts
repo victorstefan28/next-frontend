@@ -49,7 +49,9 @@ const apiCall = async (
     (!accessToken || isJwtExpired(accessToken)) &&
     endpoint !== "/auth/refresh" &&
     endpoint !== "/auth/login" &&
-    endpoint !== "/auth/register"
+    endpoint !== "/auth/register" &&
+    window.location.pathname !== "/login" &&
+    window.location.pathname !== "/register"
   ) {
     try {
       accessToken = await refreshTokenFunc();
@@ -72,8 +74,7 @@ const apiCall = async (
 
     return response.data;
   } catch (error) {
-    const errorMessages = extractErrorMessage(error);
-    errorMessages.forEach((message) => toast.error(message));
+    throw error;
   }
 };
 

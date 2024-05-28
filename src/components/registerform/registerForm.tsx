@@ -31,6 +31,10 @@ const RegisterForm = () => {
     RegisterType.User
   );
 
+  const navigateToLogin = () => {
+    window.location.href = "/login";
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     let endpoint = "/register";
@@ -51,6 +55,7 @@ const RegisterForm = () => {
         name,
       }).then(() => {
         toast.success("Account successfully created");
+        navigateToLogin();
       });
     } catch (error) {
       const errorMessages = extractErrorMessage(error);

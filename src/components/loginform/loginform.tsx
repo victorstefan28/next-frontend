@@ -8,6 +8,7 @@ import { HttpMethod } from "@/utils/httpMethods";
 import { useRouter } from "next/navigation";
 import extractErrorMessage from "@/utils/errorHandler";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -54,6 +55,11 @@ const LoginForm = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="caption" gutterBottom>
+              Don't have an account? <Link href="/register">Register</Link>
+            </Typography>
           </Grid>
           <Grid item xs={12}>
             <Button type="submit" variant="contained" color="primary">

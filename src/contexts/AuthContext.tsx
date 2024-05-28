@@ -26,7 +26,6 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter();
   const [accessToken, setAccessToken] = useState<string | null>(
     localStorage.getItem("accessToken")
@@ -49,16 +48,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
   useEffect(() => {
     if (isJwtExpired(accessToken)) {
-      refreshTokenFunc();
+      if (refreshToken) refreshTokenFunc();
+      else if (
+        window.location.pathname !== "/login" &&
+        window.location.pathname !== "/register" &&
+        window.location.pathname !== "/"
+      ) {
+        clearTokens();
+        router.replace("/login");
+      }
     }
     console.log("AuthContext: useEffect", accessToken, refreshToken);
     if (
       isJwtExpired(accessToken) &&
       isJwtExpired(refreshToken) &&
       window.location.pathname !== "/login" &&
-      window.location.pathname !== "/register"
+      window.location.pathname !== "/register" &&
+      window.location.pathname !== "/"
     ) {
-      router.push("/login");
+      router.replace("/login");
+      return;
     }
   }, [accessToken, refreshToken]);
 

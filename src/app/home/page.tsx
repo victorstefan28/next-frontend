@@ -105,7 +105,7 @@ const Home = () => {
                       color="textSecondary"
                       component="p"
                     >
-                      {item.points} Puncte
+                      {item.points} Points
                     </Typography>
                   </CardContent>
                 </Card>

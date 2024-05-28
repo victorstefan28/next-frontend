@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import axiosInstance from "./axiosInstance";
 import { HttpMethod } from "./httpMethods";
 import { isJwtExpired } from "./isJwtExpired";
@@ -43,7 +43,7 @@ const apiCall = async (
   method: HttpMethod = HttpMethod.GET,
   data: any = null
 ) => {
-  let { accessToken } = getTokens();
+  let { accessToken, refreshToken } = getTokens();
 
   if (
     (!accessToken || isJwtExpired(accessToken)) &&
@@ -56,9 +56,9 @@ const apiCall = async (
     try {
       accessToken = await refreshTokenFunc();
     } catch (error) {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const router = useRouter();
-      router.push("/login");
+      console.error("Error refreshing token:", error);
+      window.location.href = "/login";
+      return;
     }
   }
 
@@ -74,7 +74,26 @@ const apiCall = async (
 
     return response.data;
   } catch (error) {
-    throw error;
+    if (error instanceof AxiosError && error.response?.status === 401) {
+      try {
+        accessToken = await refreshTokenFunc();
+        const response = await axiosInstance({
+          url: endpoint,
+          method,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          ...(data && { data }),
+        });
+
+        return response.data;
+      } catch (error) {
+        console.error("Error refreshing token:", error);
+        window.location.href = "/login";
+      }
+    } else {
+      throw error;
+    }
   }
 };
 

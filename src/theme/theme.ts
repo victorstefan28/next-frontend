@@ -1,6 +1,7 @@
 // src/theme.ts
 "use client";
-import { createTheme } from "@mui/material/styles";
+
+import { createTheme } from "@mui/material";
 
 const theme = createTheme({
   palette: {

@@ -21,6 +21,7 @@ import { IAthlete } from "@/types/athlete";
 import { ICompetition } from "@/types/competition";
 import extractErrorMessage from "@/utils/errorHandler";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const useStyles = makeStyles({
   greetingBox: {
@@ -80,6 +81,12 @@ const Home = () => {
       <Container>
         <Paper className={classes.greetingBox}>
           <Typography variant="h2">Welcome Back!</Typography>
+          <Button variant="contained">
+            <Link href="/fight" passHref>
+              {" "}
+              <Typography>Test the live fight mock-up </Typography>
+            </Link>
+          </Button>
         </Paper>
 
         {/* News Section */}
@@ -87,6 +94,7 @@ const Home = () => {
           <Typography variant="h4" gutterBottom>
             Top athletes
           </Typography>
+
           <Grid container spacing={3}>
             {newsItems.map((item, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>

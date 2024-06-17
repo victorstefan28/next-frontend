@@ -10,7 +10,7 @@ import { DoorBack, DoorBackOutlined } from "@mui/icons-material";
 
 const useStyles = makeStyles({
   appBar: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.dark,
   },
   title: {
     flexGrow: 1,

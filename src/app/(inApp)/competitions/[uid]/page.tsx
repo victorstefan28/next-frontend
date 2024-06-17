@@ -14,31 +14,29 @@ const CompetitionPage = ({ params }: { params: { uid: string } }) => {
 
   const [competition, setCompetition] = useState<ICompetition | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const fetchCompetition = async () => {
+    setLoading(true);
+    try {
+      const data: ICompetition = await apiCall(
+        `/competition/${params.uid}`,
+        HttpMethod.GET
+      );
+      setCompetition(data);
+      apiCall(`/competition/${params.uid}/athletes`, HttpMethod.GET).then(
+        (res: IParticipant[]) => {
+          setCompetition(
+            (prev) => ({ ...prev, participants: res } as ICompetition)
+          );
+        }
+      );
+    } catch (error) {
+      console.error("Failed to fetch competition", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     if (params.uid) {
-      const fetchCompetition = async () => {
-        setLoading(true);
-        try {
-          const data: ICompetition = await apiCall(
-            `/competition/${params.uid}`,
-            HttpMethod.GET
-          );
-          setCompetition(data);
-          apiCall(`/competition/${params.uid}/athletes`, HttpMethod.GET).then(
-            (res: IParticipant[]) => {
-              setCompetition(
-                (prev) => ({ ...prev, participants: res } as ICompetition)
-              );
-            }
-          );
-        } catch (error) {
-          console.error("Failed to fetch competition", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
       fetchCompetition();
     }
   }, [params.uid]);
@@ -51,7 +49,12 @@ const CompetitionPage = ({ params }: { params: { uid: string } }) => {
     return <Box>No competition found.</Box>;
   }
 
-  return <CompetitionDetails competition={competition} />;
+  return (
+    <CompetitionDetails
+      competition={competition}
+      fetchData={fetchCompetition}
+    />
+  );
 };
 
 export default CompetitionPage;

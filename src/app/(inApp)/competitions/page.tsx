@@ -14,7 +14,6 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { HttpMethod } from "@/utils/httpMethods";
-import useRefreshApi from "@/hooks/useApi";
 import AddCompetitionModal from "@/components/modals/addCompetitionModal";
 import apiCall from "@/utils/api";
 import { Preview } from "@mui/icons-material";
@@ -33,8 +32,9 @@ const CompetitionsPage = () => {
   const handleDelete = async (competitionId: any) => {
     // Implement deletion logic
     try {
-      await apiCall(`/competition/${competitionId}`, HttpMethod.DELETE);
-      fetchCompetitions();
+      apiCall(`/competition/${competitionId}`, HttpMethod.DELETE).then(() => {
+        fetchCompetitions();
+      });
     } catch (error) {
       const errorMessages = extractErrorMessage(error);
       errorMessages.forEach((message) => toast.error(message));
@@ -103,14 +103,16 @@ const CompetitionsPage = () => {
                 <TableCell>{competition.numberOfParticipants}</TableCell>
                 <TableCell>{competition.dayLeft}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    startIcon={<DeleteIcon />}
-                    onClick={() => handleDelete(competition.id)}
-                  >
-                    Delete
-                  </Button>
+                  {isAdmin && (
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      startIcon={<DeleteIcon />}
+                      onClick={() => handleDelete(competition.id)}
+                    >
+                      Delete
+                    </Button>
+                  )}
                   <Button
                     sx={{ mx: 3 }}
                     variant="contained"

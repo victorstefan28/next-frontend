@@ -1,7 +1,7 @@
 import Navbar from "@/components/navbar/navbar";
 import { Container } from "@mui/material";
 
-export default function AccountLayout({
+export default function CompetitionLayout({
   children,
 }: {
   children: React.ReactNode;

@@ -22,15 +22,19 @@ import { ICompetition } from "@/types/competition";
 import extractErrorMessage from "@/utils/errorHandler";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import { useLoading } from "@/hooks/useLoading";
 
 const useStyles = makeStyles({
   greetingBox: {
     padding: theme.spacing(4),
-    backgroundColor: theme.palette.background.default,
+
     marginBottom: theme.spacing(4),
   },
   card: {
     maxWidth: 345,
+    backgroundColor:
+      (theme.components?.MuiCard?.styleOverrides?.root as any)
+        .backgroundColor! || theme.palette.background.default,
   },
   media: {
     height: 200,
@@ -46,6 +50,7 @@ const Home = () => {
   // Sample data for news and competitions
   const [newsItems, setNewsItems] = useState<IAthlete[]>([]);
   const [upcomingComp, setUpcomingComp] = useState<ICompetition[]>([]);
+  const { incrementLoading, decrementLoading } = useLoading();
   useEffect(() => {
     const fetchTop3 = async () => {
       try {
@@ -61,6 +66,7 @@ const Home = () => {
     };
     const fetchUpcomingCompetitions = async () => {
       try {
+        incrementLoading();
         const res = await apiCall("/Competition", HttpMethod.GET);
         const upcomingCompetitions = (res as ICompetition[]).filter(
           (item, index) => true
@@ -69,24 +75,25 @@ const Home = () => {
       } catch (error) {
         const errorMessages = extractErrorMessage(error);
         errorMessages.forEach((message) => toast.error(message));
+      } finally {
+        decrementLoading();
       }
     };
     fetchTop3();
     fetchUpcomingCompetitions();
   }, []); // replace with actual news items
-  const competitionItems = [{}, {}, {}]; // replace with actual competition items
 
   return (
     <Box>
       <Container>
         <Paper className={classes.greetingBox}>
           <Typography variant="h2">Welcome Back!</Typography>
-          <Button variant="contained">
+          {/* <Button variant="contained">
             <Link href="/fight" passHref>
               {" "}
               <Typography>Test the live fight mock-up </Typography>
             </Link>
-          </Button>
+          </Button> */}
         </Paper>
 
         {/* News Section */}
@@ -101,18 +108,14 @@ const Home = () => {
                 <Card className={classes.card}>
                   <CardMedia
                     className={classes.media}
-                    image="/athlete-placeholder.png"
+                    image="/placeholder.png"
                     title="Athlete"
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
                       {item.name}
                     </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
-                    >
+                    <Typography variant="body2" component="p">
                       {item.points} Points
                     </Typography>
                   </CardContent>
@@ -147,7 +150,7 @@ const Home = () => {
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {item.name}
+                      <Link href={`/competitions/${item.id}`}>{item.name}</Link>
                     </Typography>
                     <Typography
                       variant="body2"

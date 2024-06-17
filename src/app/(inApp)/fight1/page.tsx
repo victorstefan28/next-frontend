@@ -12,6 +12,7 @@ import {
 import { useState, useEffect } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./ActionLog.css";
+import theme from "@/theme/theme";
 interface Fighter {
   name: string;
   points: number;
@@ -78,17 +79,6 @@ const kicksData = {
     },
   },
 };
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#556cd6",
-    },
-    secondary: {
-      main: "#19857b",
-    },
-  },
-});
 
 const LiveFightPage = () => {
   const [fighter1, setFighter1] = useState<Fighter>({
@@ -233,148 +223,146 @@ const LiveFightPage = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Grid container spacing={2} sx={{ padding: 2 }}>
-        {/* Fighter 1 info */}
-        <Grid item xs={4}>
-          <Card sx={{ padding: 2 }}>
-            <Typography variant="h4">{fighter1.name}</Typography>
-            <Typography variant="h6">Points: {fighter1.points}</Typography>
-            {Object.keys(kicksData.kicks).map((kick) => (
-              <Button
-                key={kick}
-                variant="contained"
-                color="primary"
-                onClick={() =>
-                  handleScorePoint(
-                    "fighter1",
-                    kick,
-                    getRandomKickType(),
-                    getRandomBodyPart(kick)
-                  )
-                }
-              >
-                {kick}
-              </Button>
-            ))}
-          </Card>
-        </Grid>
-
-        {/* Timer and controls */}
-        <Grid item xs={4} sx={{ textAlign: "center" }}>
-          <Typography variant="h2">
-            {time.minutes.toString().padStart(2, "0")}:
-            {time.seconds.toString().padStart(2, "0")}
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setIsRunning(true)}
-          >
-            Start
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => setIsRunning(false)}
-          >
-            Stop
-          </Button>
-          <Button variant="contained" color="error" onClick={handleReset}>
-            Reset
-          </Button>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => setIsSimulating(!isSimulating)}
-          >
-            {isSimulating ? "Stop Simulate" : "Start Simulate"}
-          </Button>
-
-          {/* Action log */}
-          <Grid item xs={12} sx={{ marginTop: 2 }}>
-            <Typography variant="h5">Action Log:</Typography>
-            <div
-              style={{
-                maxHeight: "200px",
-                overflow: "scroll",
-                display: "flex",
-                flexDirection: "column-reverse",
-              }}
+    <Grid container spacing={2} sx={{ padding: 2 }}>
+      {/* Fighter 1 info */}
+      <Grid item xs={4}>
+        <Card sx={{ padding: 2 }}>
+          <Typography variant="h4">{fighter1.name}</Typography>
+          <Typography variant="h6">Points: {fighter1.points}</Typography>
+          {Object.keys(kicksData.kicks).map((kick) => (
+            <Button
+              key={kick}
+              variant="contained"
+              color="primary"
+              onClick={() =>
+                handleScorePoint(
+                  "fighter1",
+                  kick,
+                  getRandomKickType(),
+                  getRandomBodyPart(kick)
+                )
+              }
             >
-              <TransitionGroup>
-                {actionLog.map((action, index) => (
-                  <CSSTransition key={index} timeout={1000} classNames="fade">
-                    <Typography>{action}</Typography>
-                  </CSSTransition>
-                ))}
-              </TransitionGroup>
-            </div>
-          </Grid>
-        </Grid>
+              {kick}
+            </Button>
+          ))}
+        </Card>
+      </Grid>
 
-        {/* Fighter 2 info */}
-        <Grid item xs={4}>
-          <Card sx={{ padding: 2 }}>
-            <Typography variant="h4">{fighter2.name}</Typography>
-            <Typography variant="h6">Points: {fighter2.points}</Typography>
-            {Object.keys(kicksData.kicks).map((kick) => (
-              <Button
-                key={kick}
-                variant="contained"
-                color="primary"
-                onClick={() =>
-                  handleScorePoint(
-                    "fighter2",
-                    kick,
-                    getRandomKickType(),
-                    getRandomBodyPart(kick)
-                  )
-                }
-              >
-                {kick}
-              </Button>
-            ))}
-          </Card>
-        </Grid>
+      {/* Timer and controls */}
+      <Grid item xs={4} sx={{ textAlign: "center" }}>
+        <Typography variant="h2">
+          {time.minutes.toString().padStart(2, "0")}:
+          {time.seconds.toString().padStart(2, "0")}
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setIsRunning(true)}
+        >
+          Start
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => setIsRunning(false)}
+        >
+          Stop
+        </Button>
+        <Button variant="contained" color="error" onClick={handleReset}>
+          Reset
+        </Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => setIsSimulating(!isSimulating)}
+        >
+          {isSimulating ? "Stop Simulate" : "Start Simulate"}
+        </Button>
 
-        {/* Chat log */}
+        {/* Action log */}
         <Grid item xs={12} sx={{ marginTop: 2 }}>
-          <Divider />
-          <Grid container spacing={2}>
-            <Grid item xs={8}>
-              <Typography variant="h5">Chat Log:</Typography>
-              {chatLog.map((message, index) => (
-                <Typography key={index}>{message}</Typography>
+          <Typography variant="h5">Action Log:</Typography>
+          <div
+            style={{
+              maxHeight: "200px",
+              overflow: "scroll",
+              display: "flex",
+              flexDirection: "column-reverse",
+            }}
+          >
+            <TransitionGroup>
+              {actionLog.map((action, index) => (
+                <CSSTransition key={index} timeout={1000} classNames="fade">
+                  <Typography>{action}</Typography>
+                </CSSTransition>
               ))}
-              <TextField
-                fullWidth
-                value={chatMessage}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setChatMessage(e.target.value)
-                }
-                placeholder="Type a message..."
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSendMessage}
-              >
-                Send
-              </Button>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant="h5">Statistics:</Typography>
-              {Object.keys(statistics).map((bodyPart, index) => (
-                <Typography key={index}>
-                  {bodyPart}: {statistics[bodyPart]}
-                </Typography>
-              ))}
-            </Grid>
+            </TransitionGroup>
+          </div>
+        </Grid>
+      </Grid>
+
+      {/* Fighter 2 info */}
+      <Grid item xs={4}>
+        <Card sx={{ padding: 2 }}>
+          <Typography variant="h4">{fighter2.name}</Typography>
+          <Typography variant="h6">Points: {fighter2.points}</Typography>
+          {Object.keys(kicksData.kicks).map((kick) => (
+            <Button
+              key={kick}
+              variant="contained"
+              color="primary"
+              onClick={() =>
+                handleScorePoint(
+                  "fighter2",
+                  kick,
+                  getRandomKickType(),
+                  getRandomBodyPart(kick)
+                )
+              }
+            >
+              {kick}
+            </Button>
+          ))}
+        </Card>
+      </Grid>
+
+      {/* Chat log */}
+      <Grid item xs={12} sx={{ marginTop: 2 }}>
+        <Divider />
+        <Grid container spacing={2}>
+          <Grid item xs={8}>
+            <Typography variant="h5">Chat Log:</Typography>
+            {chatLog.map((message, index) => (
+              <Typography key={index}>{message}</Typography>
+            ))}
+            <TextField
+              fullWidth
+              value={chatMessage}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setChatMessage(e.target.value)
+              }
+              placeholder="Type a message..."
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSendMessage}
+            >
+              Send
+            </Button>
+          </Grid>
+          <Grid item xs={4}>
+            <Typography variant="h5">Statistics:</Typography>
+            {Object.keys(statistics).map((bodyPart, index) => (
+              <Typography key={index}>
+                {bodyPart}: {statistics[bodyPart]}
+              </Typography>
+            ))}
           </Grid>
         </Grid>
       </Grid>
-    </ThemeProvider>
+    </Grid>
   );
 };
 

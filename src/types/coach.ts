@@ -3,4 +3,6 @@ export interface ICoach {
   clubName: string;
   name: string;
   athletesNames: string[];
+  requests: any[];
+  participate: any[];
 }
